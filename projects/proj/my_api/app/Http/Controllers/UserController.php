@@ -59,7 +59,7 @@ class UserController extends Controller
 
         $user = User::where('email', $request->input('email'))->first();
         if ($user != null && Crypt::decrypt($user->password) == $request->password){
-            return view('Homepage');
+            return view('Homepage')->with('message', 'welcome '.$user->name);
         } else {
             return view('login')->with('records', 'Не правильна пошта або пароль');
         }

@@ -1,11 +1,17 @@
 <html>
     <body>
         <h1>Homepage</h1>
-        @auth
-         <div> <p>Hello</p>.</div>
-        @endauth
- 
-        @guest
+        {{ $message ?? '' }}
+        @isset($message)
+        <div>
+            <form action="/">
+                <button>
+                    Logout
+                </button>
+            </form>
+        </div>
+        @endisset
+        @empty($message)
         <div><div>
             <form action="/page/register">
                 <button>
@@ -20,6 +26,6 @@
                 </button>
             </form>
         </div> </div> 
-        @endguest
+        @endempty
     </body>
 </html>
