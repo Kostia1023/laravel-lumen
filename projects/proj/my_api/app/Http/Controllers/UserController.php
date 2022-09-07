@@ -8,20 +8,23 @@ use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
-    public function checkPassword($pwd) {
+    public function checkPassword($pwd, &$errors): bool  {
     
         if (strlen($pwd) < 8) {
-            return "Пароль дуже короткий. Повино бути більше 8 символів";
+            $errors = "Пароль дуже короткий. Повино бути більше 8 символів";
+            return false;
         }
     
         if (!preg_match("#[0-9]+#", $pwd)) {
-            return "Пароль має містити принаймі одну цифру";
+            $errors = "Пароль має містити принаймі одну цифру";
+            return false;
         }
     
         if (!preg_match("#[a-zA-Z]+#", $pwd)) {
-            return "Пароль має містити принаймі одну букву";
+            $errors = "Пароль має містити принаймі одну букву";
+            return false;   
         }     
-        return null;
+        return true;
     }
     public function postRegister(Request $request)
     {
@@ -34,18 +37,16 @@ class UserController extends Controller
         if($request->input('password') != $request->input('confirmPassword')){
             return view('register')->with('records', 'Різні паролі');
         }
-        $error = $this->checkPassword($request->input('password'));
-        if($error != null){
-            return view('register')->with('records', $error);
+        if($this->checkPassword($request->input('password'), $error)){
+            $this->validate($request, $rules);
+            $user = new User();
+            $user->email = $request->input('email');
+            $user->password = Crypt::encrypt($request->input('password'));
+            $user->name = $request->input('name');
+            $user->save();
+            return view('Homepage');
         }
-        $this->validate($request, $rules);
-        $user = new User();
-        $user->email = $request->input('email');
-        $user->password = Crypt::encrypt($request->input('password'));
-        $user->name = $request->input('name');
-        $user->save();
-        return view('Homepage');
-        //return response()->json($user);
+        return view('register')->with('records', $error);
     }
 
     public function postLogin(Request $request)
