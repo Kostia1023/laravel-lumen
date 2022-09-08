@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\GenericUser;
 
 class UserController extends Controller
 {
@@ -44,7 +47,7 @@ class UserController extends Controller
             $user->password = Crypt::encrypt($request->input('password'));
             $user->name = $request->input('name');
             $user->save();
-            return view('Homepage');
+            return view('Homepage')->with('user', $request->session()->get('user'));;
         }
         return view('register')->with('records', $error);
     }
@@ -60,9 +63,19 @@ class UserController extends Controller
 
         $user = User::where('email', $request->input('email'))->first();
         if ($user != null && Crypt::decrypt($user->password) == $request->password){
-            return view('Homepage')->with('message', 'welcome '.$user->name);
+            $api_token = base64_encode(Str::random(60));
+            $user->remember_token = $api_token;
+            $user->save();
+            $request->session()->put('user', $user);
+            return view('Homepage')->with('user', $request->session()->get('user'));
         } else {
             return view('login')->with('records', 'Не правильна пошта або пароль');
         }
+    }
+
+    public function postLogout(Request $request)
+    {
+        $user = $request->session()->put('user',  0);
+        return view('Homepage')->with('user', $request->session()->get('user'));;
     }
 }

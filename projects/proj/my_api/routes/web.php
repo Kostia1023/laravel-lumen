@@ -14,12 +14,13 @@
 */
 
 use App\Http\Controllers\UserController;
-
+use Illuminate\Http\Request;
 $router->post('/register', 'UserController@postRegister');
 $router->post('/login', 'UserController@postLogin');
+$router->post('/logout', 'UserController@postLogout');
 
-$router->get('/', function () {
-    return view('Homepage', ['name' => null]);
+$router->get('/',function (Request $request) {
+    return view('Homepage')->with('user', $request->session()->get('user'));
 });
 
 $router->get('/page/register', function () {

@@ -1,17 +1,17 @@
 <html>
     <body>
         <h1>Homepage</h1>
-        {{ $message ?? '' }}
-        @isset($message)
+        @if(!empty($user))
         <div>
-            <form action="/">
+            <p>Wellcom {{$user->name}}</p>
+            <form action="/logout" method="post">
                 <button>
                     Logout
-                </button>
+                </button type="submit">
             </form>
         </div>
-        @endisset
-        @empty($message)
+        @endif
+        @empty($user)
         <div><div>
             <form action="/page/register">
                 <button>
