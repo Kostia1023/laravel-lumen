@@ -76,7 +76,7 @@ class UserController extends Controller
 
     public function postLogout(Request $request)
     {
-        $user = $request->session()->put('user',  0);
+        $user = $request->session()->forget('user');
         return view('Homepage')->with('user', $request->session()->get('user'));;
     }
 }

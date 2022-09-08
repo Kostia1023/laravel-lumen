@@ -1,7 +1,7 @@
 <html>
     <body>
         <h1>Homepage</h1>
-        @if(!empty($user))
+        @isset($user)
         <div>
             <p>Wellcom {{$user->name}}</p>
             <form action="/logout" method="post">
@@ -10,8 +10,8 @@
                 </button type="submit">
             </form>
         </div>
-        @endif
-        @empty($user)
+        @endisset
+        @if(!isset($user))
         <div><div>
             <form action="/page/register">
                 <button>
@@ -26,6 +26,6 @@
                 </button>
             </form>
         </div> </div> 
-        @endempty
+        @endif
     </body>
 </html>
