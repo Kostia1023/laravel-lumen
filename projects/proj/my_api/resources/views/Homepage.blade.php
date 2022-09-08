@@ -11,21 +11,23 @@
             </form>
         </div>
         @endisset
-        @if(!isset($user))
-        <div><div>
-            <form action="/page/register">
-                <button>
-                    register
-                </button>
-            </form>
-        </div>
+        @if (!isset($user))
         <div>
-            <form action="/page/login">
-                <button>
-                    Login
-                </button>
-            </form>
-        </div> </div> 
+            <div>
+                <form action="/page/register">
+                    <button>
+                        register
+                    </button>
+                </form>
+            </div>
+            <div>
+                <form action="/page/login">
+                    <button>
+                        Login
+                    </button>
+                </form>
+            </div> 
+        </div> 
         @endif
     </body>
 </html>
