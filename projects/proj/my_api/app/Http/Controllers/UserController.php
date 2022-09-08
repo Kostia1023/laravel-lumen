@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\GenericUser;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -44,7 +45,7 @@ class UserController extends Controller
             $this->validate($request, $rules);
             $user = new User();
             $user->email = $request->input('email');
-            $user->password = Crypt::encrypt($request->input('password'));
+            $user->password = Hash::make($request->input('password'));
             $user->name = $request->input('name');
             $user->save();
             return view('Homepage')->with('user', $request->session()->get('user'));;
@@ -62,7 +63,7 @@ class UserController extends Controller
         $this->validate($request, $rules);
 
         $user = User::where('email', $request->input('email'))->first();
-        if ($user != null && Crypt::decrypt($user->password) == $request->password){
+        if ($user != null && Hash::check($request->password, $user->password)){
             $api_token = base64_encode(Str::random(60));
             $user->remember_token = $api_token;
             $user->save();
